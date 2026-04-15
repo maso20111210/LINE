@@ -1,0 +1,28 @@
+name: Daily_Iron_Reminder
+
+on:
+  schedule:
+    # 台灣時間 10:00 = UTC 02:00
+    - cron: '0 2 * * *'
+  workflow_dispatch: # 讓你可以手動點擊按鈕測試
+
+jobs:
+  run_bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install line-bot-sdk
+
+      - name: Run Python script
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        run: python reminder.py
